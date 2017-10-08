@@ -15,4 +15,4 @@ This is the dark story of a programmer needs to resort to crime due to financial
 
 # Graphics
 
-We can use mechanics of [this tutorial](https://unity3d.com/learn/tutorials/topics/2d-game-creation/2d-character-controllers "2d character controllers") as a placeholder while we develop our own mechanics, graphics and aesthetics.
+We can use the graphics and mechanics of [this tutorial](https://unity3d.com/learn/tutorials/topics/2d-game-creation/2d-character-controllers "2d character controllers") as a placeholder while we develop our own graphics and aesthetics. Also this [video](https://www.youtube.com/watch?v=rXLVjjIiQ9E). 
