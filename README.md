@@ -13,6 +13,11 @@ Several possibilities:
 
 This is the dark story of a programmer needs to resort to crime due to financial constraints. 
 
-# Graphics
+# Interim Graphics
 
-We can use the graphics and mechanics of [this tutorial](https://unity3d.com/learn/tutorials/topics/2d-game-creation/2d-character-controllers "2d character controllers") as a placeholder while we develop our own graphics and aesthetics. Also this [video](https://www.youtube.com/watch?v=rXLVjjIiQ9E). 
+We can use the graphics and mechanics of [this tutorial](https://unity3d.com/learn/tutorials/topics/2d-game-creation/2d-character-controllers "2d character controllers") as a placeholder while we develop our own graphics and aesthetics. Also this [video](https://www.youtube.com/watch?v=rXLVjjIiQ9E). As they're part of the 2d "standard assets" we can just drag and drop them into play, easy.
+
+# Inspiration
+
+* http://store.steampowered.com/app/209190/Stealth_Bastard_Deluxe/: it includes hacking mechanics.
+* https://en.wikipedia.org/wiki/Oddworld:_Abe%27s_Oddysee: it includes several stealth mechanics.
