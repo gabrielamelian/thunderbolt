@@ -23,3 +23,4 @@ We can use the graphics and mechanics of [this tutorial](https://unity3d.com/lea
 * https://en.wikipedia.org/wiki/Oddworld:_Abe%27s_Oddysee: it includes several stealth mechanics.
 * https://www.gamasutra.com/view/news/182368/Mark_of_the_Ninjas_five_stealth_design_rules.php
 * https://www.youtube.com/watch?v=rnucMIXVcTo
+* https://youtu.be/374vaR73My8
