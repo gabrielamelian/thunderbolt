@@ -29,8 +29,7 @@ namespace UnityStandardAssets._2D
             m_Rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
-
-        private void FixedUpdate()
+		private void FixedUpdate()
         {
             m_Grounded = false;
 
@@ -48,9 +47,13 @@ namespace UnityStandardAssets._2D
             m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
         }
 
-
-        public void Move(float move, bool crouch, bool jump)
-        {
+		/// <summary>
+		/// Move the player according to the mechanics established by the game.
+		/// </summary>
+		/// <param name="move">Move. This number corresponds to a float between 0 (not moving) and 1 (moving at full speed)</param>
+		/// <param name="crouch">If set to <c>true</c> crouch.</param>
+		/// <param name="jump">If set to <c>true</c> jump.</param>
+        public void Move(float move, bool crouch, bool jump) {
             // If crouching, check to see if the character can stand up
             if (!crouch && m_Anim.GetBool("Crouch"))
             {
