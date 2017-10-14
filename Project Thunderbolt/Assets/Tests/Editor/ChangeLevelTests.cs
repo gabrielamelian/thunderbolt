@@ -13,11 +13,11 @@ namespace Thunderbolt {
 		public ISceneChanger sceneChanger;
 	}
 
-	public class ChangeLevelTests {
+	public class ChangeLevelTests : TestBase { 
 
 		public ChangeLevelMocks GetMocks() {
 			var mocks = new ChangeLevelMocks ();
-			var go = new GameObject("go");
+			var go = new GameObject(this.GAMEOBJECT);
 
 			mocks.changeInst = go.AddComponent<ChangeToNextLevel>();
 			mocks.sceneChanger = Substitute.For<ISceneChanger> ();

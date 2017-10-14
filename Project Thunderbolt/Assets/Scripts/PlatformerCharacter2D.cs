@@ -62,7 +62,7 @@ namespace Thunderbolt {
 
             if (!stepping && initiateStep) {				
                 Direction direction = move < 0 ? Direction.Left : Direction.Right;
-                targetPosition = level.GetTargetPosition(this.transform, direction);
+                targetPosition = level.GetTargetPositionStep(this.transform, direction);
                 stepping = true;
             }
 

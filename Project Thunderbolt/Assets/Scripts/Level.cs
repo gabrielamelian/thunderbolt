@@ -4,43 +4,64 @@ using UnityEngine;
 
 namespace Thunderbolt { 
 
-    public interface ILevel {
-
-    }
-
     public enum Direction {
         Left,
         Right
     }
 
+    public interface IPhysicsModel {
+        Collider2D OverlapCircle(Vector2 point, float radius, int layerMask);
+        Collider2D OverlapPoint(Vector2 point, int layerMask);
+    }
 
-    public class Level : ILevel {
+    public class PhysicsModel : IPhysicsModel {
+        public Collider2D OverlapCircle(Vector2 point, float radius, int layerMask) {
+            return Physics2D.OverlapCircle(point, radius, layerMask);
+        }
 
-        public Collider2D GetNextBlock(Transform player, Direction dir) {
+        public Collider2D OverlapPoint(Vector2 point, int layerMask) {
+            return Physics2D.OverlapPoint(point, layerMask);
+        }
+    }
+
+    public class Level {
+
+        public IPhysicsModel phys = new PhysicsModel();
+        public float floorRadius = .2f;
+
+
+        /// <summary>
+        /// Gets the target position for a "step" movement.
+        /// </summary>
+        /// <param name="player">The player's transform.</param>
+        /// <param name="dir">Direction of the movement.</param>
+        public Vector2 GetTargetPositionStep(Transform player, Direction dir) {
             Transform groundCheck = player.Find("GroundCheck");
             LayerMask layer = LayerMask.NameToLayer("Block");
 
-            Collider2D blockBelow = Physics2D.OverlapCircle(groundCheck.position, .2f, 1 << layer);
+            Collider2D blockBelow = phys.OverlapCircle(groundCheck.position, floorRadius, 1 << layer);
             Vector2 positionBelow = blockBelow.transform.position;
 
             float xDelta = dir == Direction.Left ? -1 : 1;
             Vector2 positionNext = positionBelow + new Vector2(xDelta, 0f);
-            Collider2D nextBlock = Physics2D.OverlapPoint(positionNext, 1 << layer);
+            Collider2D nextBlock = phys.OverlapPoint(positionNext, 1 << layer);
 
-            return nextBlock;
+            Vector2 targetPos = GetTargetPositionStep(nextBlock, player, dir);
+
+            return targetPos;
         }
 
-        public Vector2 GetTargetPosition(Transform player, Direction dir) {
-            Collider2D nextBlock = GetNextBlock(player, dir);
+        private Vector2 GetTargetPositionStep(Collider2D nextBlock, Transform player, Direction dir) {
             Vector2 targetPos;
             if(nextBlock != null) {
-                float middleDelta = dir == Direction.Left ? -0.5f : 0.5f;
+                float middleDelta = 0.1f;
                 Vector2 center = (Vector2) nextBlock.transform.position + new Vector2(middleDelta, 0f);
                 targetPos = new Vector2(center.x, player.transform.position.y);
             } else {
                 float xDelta = dir == Direction.Left ? -1f : 1f;
                 targetPos = (Vector2) player.transform.position + new Vector2(xDelta, 0f);
             }
+
 
             return targetPos;
         }
