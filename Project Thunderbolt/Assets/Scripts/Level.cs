@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Thunderbolt { 
+    public class LevelException : System.Exception {
+        public LevelException(string msg) : base(msg) {}
+    }
 
     public enum Direction {
         Left,
@@ -40,15 +43,19 @@ namespace Thunderbolt {
             LayerMask layer = LayerMask.NameToLayer("Block");
 
             Collider2D blockBelow = phys.OverlapCircle(groundCheck.position, floorRadius, 1 << layer);
-            Vector2 positionBelow = blockBelow.transform.position;
+            if(blockBelow != null) {
+                Vector2 positionBelow = blockBelow.transform.position;
 
-            float xDelta = dir == Direction.Left ? -1 : 1;
-            Vector2 positionNext = positionBelow + new Vector2(xDelta, 0f);
-            Collider2D nextBlock = phys.OverlapPoint(positionNext, 1 << layer);
+                float xDelta = dir == Direction.Left ? -1 : 1;
+                Vector2 positionNext = positionBelow + new Vector2(xDelta, 0f);
+                Collider2D nextBlock = phys.OverlapPoint(positionNext, 1 << layer);
 
-            Vector2 targetPos = GetTargetPositionStep(nextBlock, player, dir);
+                Vector2 targetPos = GetTargetPositionStep(nextBlock, player, dir);
 
-            return targetPos;
+                return targetPos;
+            } else {
+               throw new LevelException("Not standing on a block.");
+            }
         }
 
         private Vector2 GetTargetPositionStep(Collider2D nextBlock, Transform player, Direction dir) {

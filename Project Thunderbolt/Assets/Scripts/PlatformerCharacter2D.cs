@@ -17,20 +17,20 @@ namespace Thunderbolt {
         private Transform m_CeilingCheck;   
         const float k_CeilingRadius = .01f;
         private Animator m_Anim;            
-        private Rigidbody2D m_Rigidbody2D;
+        private Rigidbody2D rb;
         private bool m_FacingRight = true;  
 
         private bool stepping = false;
         private Vector2 targetPosition;
 
         private Level level = new Level();
+        private Lerp lerp = new Lerp();
 
-        private void Awake()
-        {
+        private void Awake() {
             m_GroundCheck = transform.Find("GroundCheck");
             m_CeilingCheck = transform.Find("CeilingCheck");
             m_Anim = GetComponent<Animator>();
-            m_Rigidbody2D = GetComponent<Rigidbody2D>();
+            rb = GetComponent<Rigidbody2D>();
         }
 
         private void FixedUpdate() {
@@ -45,7 +45,7 @@ namespace Thunderbolt {
             }
             m_Anim.SetBool("Ground", m_Grounded);
 
-            m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
+            m_Anim.SetFloat("vSpeed", rb.velocity.y);
         }
 
         /// <summary>
@@ -57,80 +57,47 @@ namespace Thunderbolt {
         /// <param name="crouch">If set to <c>true</c> crouch.</param>
         /// <param name="jump">If set to <c>true</c> jump.</param>
         public void Move(float move, bool crouch, bool jump) {
-            float moveAbs = Math.Abs (move);
-            bool initiateStep = moveAbs > 0 && moveAbs < 1;
+            bool initiateStep = move != 0;
+            //Debug.LogFormat("stepping: {0}, inititateStep: {1}, move: {2}", stepping, initiateStep, move);
 
             if (!stepping && initiateStep) {				
-                Direction direction = move < 0 ? Direction.Left : Direction.Right;
-                targetPosition = level.GetTargetPositionStep(this.transform, direction);
-                stepping = true;
+                InititateStep(move, m_FacingRight);
             }
 
             if(stepping == true) {
-                m_Rigidbody2D.position = Vector2.Lerp(m_Rigidbody2D.position, targetPosition, Time.fixedDeltaTime);
-                m_Anim.SetFloat("Speed", 4f);
+                bool stillStepping = lerp.Step();
+                rb.position = lerp.GetPosition();
+                
+                Debug.Log("mememememe");
+                if(stillStepping) {
+                    m_Anim.SetFloat("Speed", 4f);
+                } else {
+                    if(initiateStep) {
+                        InititateStep(move, m_FacingRight);
+                    } else {
+                        m_Anim.SetFloat("Speed", 0f);
+                        stepping = false;
+                    }
+                }
             }
-
-            //			if (!
-
-
-
-            //        public void OldMove(float move, bool crouch, bool jump) {
-            //            // If crouching, check to see if the character can stand up
-            //            if (!crouch && m_Anim.GetBool("Crouch"))
-            //            {
-            //                // If the character has a ceiling preventing them from standing up, keep them crouching
-            //                if (Physics2D.OverlapCircle(m_CeilingCheck.position, k_CeilingRadius, m_WhatIsGround))
-            //                {
-            //                    crouch = true;
-            //                }
-            //            }
-            //
-            //            // Set whether or not the character is crouching in the animator
-            //            m_Anim.SetBool("Crouch", crouch);
-            //
-            //            //only control the player if grounded or airControl is turned on
-            //            if (m_Grounded || m_AirControl)
-            //            {
-            //                // Reduce the speed if crouching by the crouchSpeed multiplier
-            //                move = (crouch ? move*m_CrouchSpeed : move);
-            //
-            //                // The Speed animator parameter is set to the absolute value of the horizontal input.
-            //                m_Anim.SetFloat("Speed", Mathf.Abs(move));
-            //
-            //                // Move the character
-            //                m_Rigidbody2D.velocity = new Vector2(move*m_MaxSpeed, m_Rigidbody2D.velocity.y);
-            //
-            //                // If the input is moving the player right and the player is facing left...
-            //                if (move > 0 && !m_FacingRight)
-            //                {
-            //                    // ... flip the player.
-            //                    Flip();
-            //                }
-            //                    // Otherwise if the input is moving the player left and the player is facing right...
-            //                else if (move < 0 && m_FacingRight)
-            //                {
-            //                    // ... flip the player.
-            //                    Flip();
-            //                }
-            //            }
-            //            // If the player should jump...
-            //            if (m_Grounded && jump && m_Anim.GetBool("Ground"))
-            //            {
-            //                // Add a vertical force to the player.
-            //                m_Grounded = false;
-            //                m_Anim.SetBool("Ground", false);
-            //                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
-            //            }
         }
-        //
+        
+        public void InititateStep(float move, bool facingRight) {
+            Direction direction = move < 0 ? Direction.Left : Direction.Right;
+            targetPosition = level.GetTargetPositionStep(this.transform, direction);
+            lerp.StartLerping(rb.position, targetPosition);
+            stepping = true;
 
-        private void Flip()
-        {
-            // Switch the way the player is labelled as facing.
+            if (move > 0 && !facingRight) {
+                Flip();
+            } else if (move < 0 && facingRight) {
+                Flip();
+            }
+        }
+
+        private void Flip() {
             m_FacingRight = !m_FacingRight;
 
-            // Multiply the player's x local scale by -1.
             Vector3 theScale = transform.localScale;
             theScale.x *= -1;
             transform.localScale = theScale;
