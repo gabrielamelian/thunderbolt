@@ -10,6 +10,7 @@ namespace Thunderbolt {
     public class CharacterTests : TestBase {
 
         ThunderboltCharacter tc;
+        float move = 0.1f;
 
         [SetUp]
         public void SetUp() {
@@ -26,7 +27,6 @@ namespace Thunderbolt {
 
         [Test]
         public void TestPassesRightParamsToLerp() {
-            float move = 0.1f;
             Vector2 target = new Vector2(2f, 2f);
             tc.level.GetTargetPositionStep(Arg.Any<Transform>(), Arg.Any<Direction>()).ReturnsForAnyArgs(target);
 
@@ -37,21 +37,27 @@ namespace Thunderbolt {
 
         [Test]
         public void TestPassesRightTimeTakenWalk() {
-            Assert.True(false);
+            bool running = false;
+            tc.InititateStep(move, true, running);
+
+            tc.lerp.Received().StartLerping(Arg.Any<Vector2>(), Arg.Any<Vector2>(), WalkConfig.timeTaken);
         }
 
         [Test]
         public void TestPassesRightTimeTakenRun() {
+            bool running = true;
+            tc.InititateStep(move, true, running);
+
+            tc.lerp.Received().StartLerping(Arg.Any<Vector2>(), Arg.Any<Vector2>(), RunConfig.timeTaken);
+        }
+
+        [Test]
+        public void TestAnimPassesRightSpeedWalk() {
             Assert.True(false);
         }
 
         [Test]
-        public void TestAnimPassessRightSpeedWalk() {
-            Assert.True(false);
-        }
-
-        [Test]
-        public void TestAnimPassessRightSpeedRun() {
+        public void TestAnimPassesRightSpeedRun() {
             Assert.True(false);
         }
 

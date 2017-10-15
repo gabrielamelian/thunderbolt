@@ -3,6 +3,16 @@ using UnityEngine;
 
 namespace Thunderbolt { 
 
+    public class RunConfig {
+        public static float timeTaken = 0.12f;
+        public static float animSpeed = 1f;
+    }
+
+    public class WalkConfig {
+        public static float timeTaken = 0.35f;
+        public static float animSpeed = 0.05f;
+    }
+
     public class ThunderboltCharacter : MonoBehaviour {
 
         [SerializeField] private float m_MaxSpeed = 10f;                    
@@ -84,7 +94,7 @@ namespace Thunderbolt {
             Direction direction = move < 0 ? Direction.Left : Direction.Right;
             targetPosition = level.GetTargetPositionStep(this.transform, direction);
 
-            float timeTaken = run ? 0.12f : 0.35f;
+            float timeTaken = run ? RunConfig.timeTaken: WalkConfig.timeTaken;
             float animSpeed = run ? 1f : 0.05f;
 
             lerp.StartLerping(rb.position, targetPosition, timeTaken);
