@@ -69,15 +69,16 @@ namespace Thunderbolt {
             if(stepping == true) {
                 bool stillStepping = lerp.Step();
                 rb.position = lerp.GetPosition();
+                Debug.Log(rb.position);
 
                 if(!stillStepping) {
                     if(initiateStep) {
-                        running = run;
                         InititateStep(move, m_FacingRight, run);
                     } else {
+                        Debug.Log("Stopping for no REASON!!!!!!");
                         m_Anim.SetFloat("Speed", 0f);
                         stepping = false;
-                        running = false;
+                        running = run;
                     }
                 }
             }
@@ -87,10 +88,12 @@ namespace Thunderbolt {
             Direction direction = move < 0 ? Direction.Left : Direction.Right;
             targetPosition = level.GetTargetPositionStep(this.transform, direction);
 
-            float timeTaken = run ? 0.12f : 0.25f;
+            float timeTaken = run ? 0.12f : 0.35f;
             float animSpeed = run ? 1f : 0.05f;
             this.lerp.timeTakenDuringLerp = timeTaken;
+            Debug.Log(timeTaken);
             m_Anim.SetFloat("Speed", animSpeed);
+            running = run;
             lerp.StartLerping(rb.position, targetPosition);
 
             stepping = true;
