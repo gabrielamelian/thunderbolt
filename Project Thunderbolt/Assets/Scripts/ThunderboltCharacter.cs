@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Thunderbolt { 
 
-    public class PlatformerCharacter2D : MonoBehaviour {
+    public class ThunderboltCharacter : MonoBehaviour {
 
         [SerializeField] private float m_MaxSpeed = 10f;                    
         [SerializeField] private float m_JumpForce = 400f;                  
@@ -67,10 +67,9 @@ namespace Thunderbolt {
             if(stepping == true) {
                 bool stillStepping = lerp.Step();
                 rb.position = lerp.GetPosition();
-                
-                Debug.Log("mememememe");
+
                 if(stillStepping) {
-                    m_Anim.SetFloat("Speed", 4f);
+                    m_Anim.SetFloat("Speed", 0.04f);
                 } else {
                     if(initiateStep) {
                         InititateStep(move, m_FacingRight);
@@ -81,7 +80,7 @@ namespace Thunderbolt {
                 }
             }
         }
-        
+
         public void InititateStep(float move, bool facingRight) {
             Direction direction = move < 0 ? Direction.Left : Direction.Right;
             targetPosition = level.GetTargetPositionStep(this.transform, direction);
@@ -102,5 +101,5 @@ namespace Thunderbolt {
             theScale.x *= -1;
             transform.localScale = theScale;
         }
-        }
     }
+}

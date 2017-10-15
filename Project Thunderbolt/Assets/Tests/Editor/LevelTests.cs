@@ -56,7 +56,7 @@ namespace Thunderbolt {
 
             level.phys.Received().OverlapPoint(expectedPos, Arg.Any<int>());
 
-            Assert.AreEqual(targetPos, new Vector2(2.1f, 0.0f));
+            Assert.AreEqual(targetPos, new Vector2(2.1f, 8.9814f));
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace Thunderbolt {
 
             level.phys.Received().OverlapPoint(expectedPos, Arg.Any<int>());
             
-            Assert.AreEqual(targetPos, new Vector2(0.1f, 0.0f));
+            Assert.AreEqual(targetPos, new Vector2(0.1f, 8.9814f));
         }
     }
 

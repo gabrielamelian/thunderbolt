@@ -3,17 +3,16 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
 namespace Thunderbolt { 
-
-    [RequireComponent(typeof (PlatformerCharacter2D))]
-    public class Platformer2DUserControl : MonoBehaviour
+    //[RequireComponent(typeof (PlatformerCharacter2D))]
+    public class ThunderboltCharacterControl : MonoBehaviour
     {
-        private PlatformerCharacter2D m_Character;
+        private ThunderboltCharacter m_Character;
         private bool m_Jump;
 
 
         private void Awake()
         {
-            m_Character = GetComponent<PlatformerCharacter2D>();
+            m_Character = GetComponent<ThunderboltCharacter>();
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class TestBase {
     protected string GAMEOBJECT = "TestGameObject";
@@ -10,6 +11,6 @@ public class TestBase {
     }
 
     protected GameObject getPlayer() {
-        return (GameObject) UnityEngine.Object.Instantiate(Resources.Load("prefabs/CharacterRobotBoy"));
+        return (GameObject) UnityEngine.Object.Instantiate(AssetDatabase.LoadMainAssetAtPath("Assets/Standard Assets/2D/Prefabs/CharacterRobotBoy.prefab"));
     }
 }
