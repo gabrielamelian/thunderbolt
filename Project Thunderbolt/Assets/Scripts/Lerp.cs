@@ -4,15 +4,21 @@ using UnityEngine;
 
 namespace Thunderbolt { 
 
+    public interface ILerp {
+        void StartLerping(Vector2 startPos, Vector2 endPos, float timeTaken);
+        bool Step();
+        Vector2 GetPosition();
+    }
+
     /// <summary>
     /// Convenience object for dealing with "Lerp" movements. Adapted from here http://www.blueraja.com/blog/404/how-to-use-unity-3ds-linear-interpolation-vector3-lerp-correctly
     /// </summary>
-    public class Lerp {
+    public class Lerp : ILerp {
 
         /// <summary>
         /// The time taken to move from the start to finish positions
         /// </summary>
-        public float timeTakenDuringLerp = 0.5f;
+        private float timeTakenDuringLerp = 0.5f;
 
         //Whether we are currently interpolating or not
         private bool _isLerping;
@@ -29,10 +35,10 @@ namespace Thunderbolt {
         /// <summary>
         /// Called to begin the linear interpolation
         /// </summary>
-        public void StartLerping(Vector2 startPos, Vector2 endPos) {
+        public void StartLerping(Vector2 startPos, Vector2 endPos, float timeTaken) {
             _isLerping = true;
             _timeStartedLerping = Time.time;
-
+            timeTakenDuringLerp = timeTaken;
             _startPosition = startPos;
             _endPosition = endPos;
         }

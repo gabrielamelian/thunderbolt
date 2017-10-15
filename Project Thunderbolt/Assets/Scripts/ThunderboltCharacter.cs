@@ -11,23 +11,21 @@ namespace Thunderbolt {
         [SerializeField] private bool m_AirControl = false;                 
         [SerializeField] private LayerMask m_WhatIsGround;                  
 
-        private Transform m_GroundCheck;    
-        const float k_GroundedRadius = .2f; 
-        private bool m_Grounded;            
-        private Transform m_CeilingCheck;   
         const float k_CeilingRadius = .01f;
+        const float k_GroundedRadius = .2f; 
         private Animator m_Anim;            
-        private Rigidbody2D rb;
         private bool m_FacingRight = true;  
-
-        private bool stepping = false;
+        private bool m_Grounded;            
         private bool running = false;
+        private bool stepping = false;
+        private Transform m_CeilingCheck;   
+        private Transform m_GroundCheck;    
         private Vector2 targetPosition;
+        public ILerp lerp = new Lerp();
+        public ILevel level = new Level();
+        public Rigidbody2D rb;
 
-        private Level level = new Level();
-        private Lerp lerp = new Lerp();
-
-        private void Awake() {
+        public void Awake() {
             m_GroundCheck = transform.Find("GroundCheck");
             m_CeilingCheck = transform.Find("CeilingCheck");
             m_Anim = GetComponent<Animator>();
@@ -69,13 +67,11 @@ namespace Thunderbolt {
             if(stepping == true) {
                 bool stillStepping = lerp.Step();
                 rb.position = lerp.GetPosition();
-                Debug.Log(rb.position);
 
                 if(!stillStepping) {
                     if(initiateStep) {
                         InititateStep(move, m_FacingRight, run);
                     } else {
-                        Debug.Log("Stopping for no REASON!!!!!!");
                         m_Anim.SetFloat("Speed", 0f);
                         stepping = false;
                         running = run;
@@ -90,12 +86,11 @@ namespace Thunderbolt {
 
             float timeTaken = run ? 0.12f : 0.35f;
             float animSpeed = run ? 1f : 0.05f;
-            this.lerp.timeTakenDuringLerp = timeTaken;
-            Debug.Log(timeTaken);
+
+            lerp.StartLerping(rb.position, targetPosition, timeTaken);
+
             m_Anim.SetFloat("Speed", animSpeed);
             running = run;
-            lerp.StartLerping(rb.position, targetPosition);
-
             stepping = true;
 
             if (move > 0 && !facingRight) {

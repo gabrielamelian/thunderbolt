@@ -8,18 +8,6 @@ using NSubstitute;
 namespace Thunderbolt { 
 
     public class LevelTests : TestBase {
-        //public ChangeLevelMocks GetMocks() {
-            //var mocks = new ChangeLevelMocks ();
-            //var go = new GameObject("go");
-
-            //mocks.changeInst = go.AddComponent<ChangeToNextLevel>();
-            //mocks.sceneChanger = Substitute.For<ISceneChanger> ();
-
-            //mocks.changeInst.nextLevel = "level_2";
-            //mocks.changeInst.setSceneChanger (mocks.sceneChanger);
-
-            //return mocks;
-        //}
 
         private Level level;
         private Vector2 blockPosition = new Vector2(1, 1);

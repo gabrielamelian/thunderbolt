@@ -17,6 +17,10 @@ namespace Thunderbolt {
         Collider2D OverlapPoint(Vector2 point, int layerMask);
     }
 
+    public interface ILevel {
+        Vector2 GetTargetPositionStep(Transform player, Direction dir);
+    }
+
     public class PhysicsModel : IPhysicsModel {
         public Collider2D OverlapCircle(Vector2 point, float radius, int layerMask) {
             return Physics2D.OverlapCircle(point, radius, layerMask);
@@ -27,7 +31,7 @@ namespace Thunderbolt {
         }
     }
 
-    public class Level {
+    public class Level : ILevel {
 
         public IPhysicsModel phys = new PhysicsModel();
         public float floorRadius = .2f;
