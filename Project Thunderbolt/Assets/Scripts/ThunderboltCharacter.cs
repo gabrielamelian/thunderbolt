@@ -21,6 +21,7 @@ namespace Thunderbolt {
         private bool m_FacingRight = true;  
 
         private bool stepping = false;
+        private bool running = false;
         private Vector2 targetPosition;
 
         private Level level = new Level();
@@ -56,35 +57,42 @@ namespace Thunderbolt {
         /// <param name="move">Move. This number corresponds to a float between 0 (not moving) and 1 (moving at full speed)</param>
         /// <param name="crouch">If set to <c>true</c> crouch.</param>
         /// <param name="jump">If set to <c>true</c> jump.</param>
-        public void Move(float move, bool crouch, bool jump) {
+        /// <param name="run">If set to <c>true</c> run.</param>
+        public void Move(float move, bool crouch, bool jump, bool run) {
             bool initiateStep = move != 0;
             //Debug.LogFormat("stepping: {0}, inititateStep: {1}, move: {2}", stepping, initiateStep, move);
 
             if (!stepping && initiateStep) {				
-                InititateStep(move, m_FacingRight);
+                InititateStep(move, m_FacingRight, run);
             }
 
             if(stepping == true) {
                 bool stillStepping = lerp.Step();
                 rb.position = lerp.GetPosition();
 
-                if(stillStepping) {
-                    m_Anim.SetFloat("Speed", 0.04f);
-                } else {
+                if(!stillStepping) {
                     if(initiateStep) {
-                        InititateStep(move, m_FacingRight);
+                        running = run;
+                        InititateStep(move, m_FacingRight, run);
                     } else {
                         m_Anim.SetFloat("Speed", 0f);
                         stepping = false;
+                        running = false;
                     }
                 }
             }
         }
 
-        public void InititateStep(float move, bool facingRight) {
+        public void InititateStep(float move, bool facingRight, bool run) {
             Direction direction = move < 0 ? Direction.Left : Direction.Right;
             targetPosition = level.GetTargetPositionStep(this.transform, direction);
+
+            float timeTaken = run ? 0.12f : 0.25f;
+            float animSpeed = run ? 1f : 0.05f;
+            this.lerp.timeTakenDuringLerp = timeTaken;
+            m_Anim.SetFloat("Speed", animSpeed);
             lerp.StartLerping(rb.position, targetPosition);
+
             stepping = true;
 
             if (move > 0 && !facingRight) {
