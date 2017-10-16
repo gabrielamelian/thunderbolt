@@ -13,6 +13,28 @@ namespace Thunderbolt {
         public static float animSpeed = 0.05f;
     }
 
+    public interface IAnimator {
+        void SetFloat(string variable, float val);
+        void SetBool(string variable, bool val);
+    }
+
+    public class AnimatorWrapper : IAnimator {
+        private Animator anim;
+
+        public AnimatorWrapper(Animator anim) {
+            this.anim = anim;
+        }
+
+        public void SetFloat(string variable, float val) {
+            anim.SetFloat(variable, val);
+        } 
+
+        public void SetBool(string variable, bool val) {
+            anim.SetBool(variable, val);
+        }
+        
+    }
+
     public class ThunderboltCharacter : MonoBehaviour {
 
         [SerializeField] private float m_MaxSpeed = 10f;                    
@@ -23,7 +45,7 @@ namespace Thunderbolt {
 
         const float k_CeilingRadius = .01f;
         const float k_GroundedRadius = .2f; 
-        private Animator m_Anim;            
+        public IAnimator animator;            
         private bool m_FacingRight = true;  
         private bool m_Grounded;            
         private bool running = false;
@@ -38,7 +60,7 @@ namespace Thunderbolt {
         public void Awake() {
             m_GroundCheck = transform.Find("GroundCheck");
             m_CeilingCheck = transform.Find("CeilingCheck");
-            m_Anim = GetComponent<Animator>();
+            animator = new AnimatorWrapper(GetComponent<Animator>());
             rb = GetComponent<Rigidbody2D>();
         }
 
@@ -52,9 +74,9 @@ namespace Thunderbolt {
                 if (colliders[i].gameObject != gameObject)
                     m_Grounded = true;
             }
-            m_Anim.SetBool("Ground", m_Grounded);
+            animator.SetBool("Ground", m_Grounded);
 
-            m_Anim.SetFloat("vSpeed", rb.velocity.y);
+            animator.SetFloat("vSpeed", rb.velocity.y);
         }
 
         /// <summary>
@@ -82,7 +104,7 @@ namespace Thunderbolt {
                     if(initiateStep) {
                         InititateStep(move, m_FacingRight, run);
                     } else {
-                        m_Anim.SetFloat("Speed", 0f);
+                        animator.SetFloat("Speed", 0f);
                         stepping = false;
                         running = run;
                     }
@@ -95,11 +117,11 @@ namespace Thunderbolt {
             targetPosition = level.GetTargetPositionStep(this.transform, direction);
 
             float timeTaken = run ? RunConfig.timeTaken: WalkConfig.timeTaken;
-            float animSpeed = run ? 1f : 0.05f;
+            float animSpeed = run ? RunConfig.animSpeed : WalkConfig.animSpeed;
 
             lerp.StartLerping(rb.position, targetPosition, timeTaken);
 
-            m_Anim.SetFloat("Speed", animSpeed);
+            animator.SetFloat("Speed", animSpeed);
             running = run;
             stepping = true;
 

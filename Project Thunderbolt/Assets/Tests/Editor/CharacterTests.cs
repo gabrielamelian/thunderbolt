@@ -16,12 +16,14 @@ namespace Thunderbolt {
         public void SetUp() {
             ILevel level = Substitute.For<ILevel>();
             ILerp lerp = Substitute.For<ILerp>();
+            IAnimator animator = Substitute.For<IAnimator>();
             GameObject player = getPlayer();
 
             tc = player.GetComponent<ThunderboltCharacter>();
             tc.Awake();
             tc.level = level;
             tc.lerp = lerp;
+            tc.animator = animator;
 
         }
 
@@ -53,12 +55,18 @@ namespace Thunderbolt {
 
         [Test]
         public void TestAnimPassesRightSpeedWalk() {
-            Assert.True(false);
+            bool running = false;
+            tc.InititateStep(move, true, running);
+
+            tc.animator.Received().SetFloat("Speed", WalkConfig.animSpeed);
         }
 
         [Test]
         public void TestAnimPassesRightSpeedRun() {
-            Assert.True(false);
+            bool running = true;
+            tc.InititateStep(move, true, running);
+
+            tc.animator.Received().SetFloat("Speed", RunConfig.animSpeed);
         }
 
 
