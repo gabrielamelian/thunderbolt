@@ -86,9 +86,9 @@ namespace Thunderbolt {
         /// </summary>
         /// <param name="move">Move. This number corresponds to a float between 0 (not moving) and 1 (moving at full speed)</param>
         /// <param name="crouch">If set to <c>true</c> crouch.</param>
-        /// <param name="jump">If set to <c>true</c> jump.</param>
+        /// <param name="hoist">If set to <c>true</c> hoist.</param>
         /// <param name="run">If set to <c>true</c> run.</param>
-        public void Move(float move, bool crouch, bool jump, bool run) {
+        public void Move(float move, bool crouch, bool hoist, bool run) {
             bool initiateStep = move != 0;
             //Debug.LogFormat("stepping: {0}, inititateStep: {1}, move: {2}", stepping, initiateStep, move);
 
