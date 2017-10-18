@@ -46,7 +46,7 @@ namespace Thunderbolt {
         const float k_CeilingRadius = .01f;
         const float k_GroundedRadius = .2f; 
         public IAnimator animator;            
-        private bool m_FacingRight = true;  
+        private bool facingRight = true;  
         private bool m_Grounded;            
         private bool running = false;
         private bool stepping = false;
@@ -93,23 +93,29 @@ namespace Thunderbolt {
             //Debug.LogFormat("stepping: {0}, inititateStep: {1}, move: {2}", stepping, initiateStep, move);
 
             if (!stepping && initiateStep) {				
-                InititateStep(move, m_FacingRight, run);
+                InititateStep(move, facingRight, run);
             }
 
             if(stepping == true) {
-                bool stillStepping = lerp.Step();
-                rb.position = lerp.GetPosition();
+                bool stillStepping = ProcessStep();
 
                 if(!stillStepping) {
+                    stepping = false;
                     if(initiateStep) {
-                        InititateStep(move, m_FacingRight, run);
+                        Move(move, crouch, hoist, run);
                     } else {
                         animator.SetFloat("Speed", 0f);
-                        stepping = false;
-                        running = run;
                     }
                 }
             }
+
+        }
+
+        public bool ProcessStep() {
+            bool stillStepping = lerp.Step();
+            rb.position = lerp.GetPosition();
+
+            return stillStepping;
         }
 
         public void InititateStep(float move, bool facingRight, bool run) {
@@ -133,7 +139,7 @@ namespace Thunderbolt {
         }
 
         private void Flip() {
-            m_FacingRight = !m_FacingRight;
+            facingRight = !facingRight;
 
             Vector3 theScale = transform.localScale;
             theScale.x *= -1;

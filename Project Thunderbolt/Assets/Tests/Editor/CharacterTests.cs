@@ -69,6 +69,15 @@ namespace Thunderbolt {
             tc.animator.Received().SetFloat("Speed", RunConfig.animSpeed);
         }
 
+        [Test]
+        public void TestProcessStep() {
+            //bool running = true;
+            //tc.InititateStep(move, true, running);
+
+            //tc.animator.Received().SetFloat("Speed", RunConfig.animSpeed);
+            Assert.True(false);
+        }
+
 
     }
 
