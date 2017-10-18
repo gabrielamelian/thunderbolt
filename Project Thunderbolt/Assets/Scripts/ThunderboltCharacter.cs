@@ -16,6 +16,7 @@ namespace Thunderbolt {
     public interface IAnimator {
         void SetFloat(string variable, float val);
         void SetBool(string variable, bool val);
+        void SetTrigger(string variable);
     }
 
     public class AnimatorWrapper : IAnimator {
@@ -31,6 +32,10 @@ namespace Thunderbolt {
 
         public void SetBool(string variable, bool val) {
             anim.SetBool(variable, val);
+        }
+
+        public void SetTrigger(string variable) {
+            anim.SetTrigger(variable);
         }
         
     }
@@ -96,6 +101,10 @@ namespace Thunderbolt {
                 InititateStep(move, facingRight, run);
             }
 
+            if(!stepping && hoist) {
+                animator.SetTrigger("Hoist");
+            }
+
             if(stepping == true) {
                 bool stillStepping = ProcessStep();
 
@@ -109,13 +118,6 @@ namespace Thunderbolt {
                 }
             }
 
-        }
-
-        public bool ProcessStep() {
-            bool stillStepping = lerp.Step();
-            rb.position = lerp.GetPosition();
-
-            return stillStepping;
         }
 
         public void InititateStep(float move, bool facingRight, bool run) {
@@ -136,6 +138,13 @@ namespace Thunderbolt {
             } else if (move < 0 && facingRight) {
                 Flip();
             }
+        }
+
+        public bool ProcessStep() {
+            bool stillStepping = lerp.Step();
+            rb.position = lerp.GetPosition();
+
+            return stillStepping;
         }
 
         private void Flip() {

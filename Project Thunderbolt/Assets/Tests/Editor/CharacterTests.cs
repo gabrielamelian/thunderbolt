@@ -71,11 +71,26 @@ namespace Thunderbolt {
 
         [Test]
         public void TestProcessStep() {
-            //bool running = true;
-            //tc.InititateStep(move, true, running);
+            Vector2 expectedVector = new Vector2(12, 12);
+            tc.lerp.Step().Returns(true);
+            tc.lerp.GetPosition().Returns(expectedVector);
 
-            //tc.animator.Received().SetFloat("Speed", RunConfig.animSpeed);
-            Assert.True(false);
+            bool isStepping = tc.ProcessStep();
+
+            tc.lerp.Received().Step();
+            tc.lerp.Received().GetPosition();
+
+            Assert.AreEqual(expectedVector, tc.rb.position); 
+            Assert.True(isStepping);
+        }
+
+        [Test]
+        public void TestProcessStepFinished() {
+            tc.lerp.Step().Returns(false);
+
+            bool isStepping = tc.ProcessStep();
+
+            Assert.False(isStepping);
         }
 
 
