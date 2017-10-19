@@ -102,7 +102,7 @@ namespace Thunderbolt {
             }
 
             if(!stepping && hoist) {
-                animator.SetTrigger("Hoist");
+                //animator.SetTrigger("Hoist");
                 InitiateHoist();
             }
 

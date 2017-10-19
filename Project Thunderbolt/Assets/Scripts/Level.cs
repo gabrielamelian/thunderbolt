@@ -15,11 +15,7 @@ namespace Thunderbolt {
     public interface IPhysicsModel {
         Collider2D OverlapCircle(Vector2 point, float radius, int layerMask);
         Collider2D OverlapPoint(Vector2 point, int layerMask);
-    }
-
-    public interface ILevel {
-        Vector2 GetTargetPositionStep(Transform player, Direction dir);
-        Vector2 GetTargetPositionHoist(Transform player);
+        RaycastHit2D Raycast(Vector2 origin, Vector2 direction, float distance, int layerMask);
     }
 
     public class PhysicsModel : IPhysicsModel {
@@ -30,6 +26,15 @@ namespace Thunderbolt {
         public Collider2D OverlapPoint(Vector2 point, int layerMask) {
             return Physics2D.OverlapPoint(point, layerMask);
         }
+
+        public RaycastHit2D Raycast(Vector2 origin, Vector2 direction, float distance, int layerMask) {
+            return Physics2D.Raycast(origin, direction, distance, layerMask);
+        }
+    }
+
+    public interface ILevel {
+        Vector2 GetTargetPositionStep(Transform player, Direction dir);
+        Vector2 GetTargetPositionHoist(Transform player);
     }
 
     public class Level : ILevel {
@@ -84,6 +89,9 @@ namespace Thunderbolt {
         /// </summary>
         /// <param name="player">The player's transform.</param>
         public Vector2 GetTargetPositionHoist(Transform player) {
+            LayerMask layer = LayerMask.NameToLayer("Block");
+            RaycastHit2D block = phys.Raycast(player.position, Vector2.up, 4f, 1 << layer);
+            Debug.Log(block.transform);
             return new Vector2(0f, 0f);
         }
 
