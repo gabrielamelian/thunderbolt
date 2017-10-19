@@ -19,6 +19,7 @@ namespace Thunderbolt {
 
     public interface ILevel {
         Vector2 GetTargetPositionStep(Transform player, Direction dir);
+        Vector2 GetTargetPositionHoist(Transform player);
     }
 
     public class PhysicsModel : IPhysicsModel {
@@ -75,6 +76,15 @@ namespace Thunderbolt {
 
 
             return targetPos;
+        }
+
+        /// <summary>
+        /// Gets the position for a climbable block that is present above the
+        /// player. If any. Otherwise Raises LevelException.
+        /// </summary>
+        /// <param name="player">The player's transform.</param>
+        public Vector2 GetTargetPositionHoist(Transform player) {
+            return new Vector2(0f, 0f);
         }
 
     }

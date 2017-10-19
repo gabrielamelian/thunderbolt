@@ -65,6 +65,11 @@ namespace Thunderbolt {
             
             Assert.AreEqual(targetPos, new Vector2(0.1f, 8.9814f));
         }
+
+        [Test]
+        public void TestFindsTopBlockHoist() {
+            Assert.True(false);
+        }
     }
 
 }

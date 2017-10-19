@@ -93,6 +93,11 @@ namespace Thunderbolt {
             Assert.False(isStepping);
         }
 
+        [Test]
+        public void TestInitiateHoist() {
+            Assert.True(false);
+        }
+
 
     }
 

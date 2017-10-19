@@ -103,6 +103,7 @@ namespace Thunderbolt {
 
             if(!stepping && hoist) {
                 animator.SetTrigger("Hoist");
+                InitiateHoist();
             }
 
             if(stepping == true) {
@@ -118,6 +119,10 @@ namespace Thunderbolt {
                 }
             }
 
+        }
+
+        public void InitiateHoist() {
+            targetPosition = level.GetTargetPositionHoist(this.transform);
         }
 
         public void InititateStep(float move, bool facingRight, bool run) {
