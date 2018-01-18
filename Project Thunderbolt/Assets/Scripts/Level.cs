@@ -15,7 +15,7 @@ namespace Thunderbolt {
     public interface IPhysicsModel {
         Collider2D OverlapCircle(Vector2 point, float radius, int layerMask);
         Collider2D OverlapPoint(Vector2 point, int layerMask);
-        RaycastHit2D Raycast(Vector2 origin, Vector2 direction, float distance, int layerMask);
+        Collider2D Raycast(Vector2 origin, Vector2 direction, float distance, int layerMask);
     }
 
     public class PhysicsModel : IPhysicsModel {
@@ -27,8 +27,14 @@ namespace Thunderbolt {
             return Physics2D.OverlapPoint(point, layerMask);
         }
 
-        public RaycastHit2D Raycast(Vector2 origin, Vector2 direction, float distance, int layerMask) {
-            return Physics2D.Raycast(origin, direction, distance, layerMask);
+        // Note that this returns Collider2D instead of RaycastHit2D.
+        public Collider2D Raycast(Vector2 origin, Vector2 direction, float distance, int layerMask) {
+            RaycastHit2D rayHit = Physics2D.Raycast(origin, direction, distance, layerMask);
+            if(rayHit != null) {
+                return rayHit.collider;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -89,10 +95,14 @@ namespace Thunderbolt {
         /// </summary>
         /// <param name="player">The player's transform.</param>
         public Vector2 GetTargetPositionHoist(Transform player) {
-            LayerMask layer = LayerMask.NameToLayer("Block");
-            RaycastHit2D block = phys.Raycast(player.position, Vector2.up, 4f, 1 << layer);
-            Debug.Log(block.transform);
-            return new Vector2(0f, 0f);
+            LayerMask layer = LayerMask.NameToLayer("ClimbableBlock");
+            Collider2D climbableBlock = phys.Raycast(player.position, Vector2.up, 4f, 1 << layer);
+
+            if(climbableBlock != null) {
+                return climbableBlock.transform.position;
+            } else {
+                throw new LevelException("Can't hoist, there's no ClimbableBlock above.");
+            }
         }
 
     }

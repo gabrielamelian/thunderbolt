@@ -95,7 +95,9 @@ namespace Thunderbolt {
 
         [Test]
         public void TestInitiateHoist() {
-            Assert.True(false);
+            tc.InitiateHoist();
+            tc.level.Received().GetTargetPositionHoist(tc.transform);
+            tc.animator.Received().SetTrigger("Hoist");
         }
 
 

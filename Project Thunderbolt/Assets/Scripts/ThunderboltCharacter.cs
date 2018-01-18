@@ -94,6 +94,7 @@ namespace Thunderbolt {
         /// <param name="hoist">If set to <c>true</c> hoist.</param>
         /// <param name="run">If set to <c>true</c> run.</param>
         public void Move(float move, bool crouch, bool hoist, bool run) {
+
             bool initiateStep = move != 0;
             //Debug.LogFormat("stepping: {0}, inititateStep: {1}, move: {2}", stepping, initiateStep, move);
 
@@ -102,7 +103,6 @@ namespace Thunderbolt {
             }
 
             if(!stepping && hoist) {
-                //animator.SetTrigger("Hoist");
                 InitiateHoist();
             }
 
@@ -122,7 +122,13 @@ namespace Thunderbolt {
         }
 
         public void InitiateHoist() {
-            targetPosition = level.GetTargetPositionHoist(this.transform);
+            try { 
+                targetPosition = level.GetTargetPositionHoist(this.transform);
+                animator.SetTrigger("Hoist");
+                Debug.Log(targetPosition);
+            } catch(LevelException e) {
+                return;
+            } 
         }
 
         public void InititateStep(float move, bool facingRight, bool run) {
@@ -147,6 +153,7 @@ namespace Thunderbolt {
 
         public bool ProcessStep() {
             bool stillStepping = lerp.Step();
+
             rb.position = lerp.GetPosition();
 
             return stillStepping;

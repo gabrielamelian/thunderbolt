@@ -18,7 +18,7 @@ namespace Thunderbolt {
         /// <summary>
         /// The time taken to move from the start to finish positions
         /// </summary>
-        private float timeTakenDuringLerp = 0.5f;
+        private float timeTakenDuringLerp = 0.4f;
 
         //Whether we are currently interpolating or not
         private bool _isLerping;

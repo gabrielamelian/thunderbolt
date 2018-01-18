@@ -11,6 +11,8 @@ namespace Thunderbolt {
 
         private Level level;
         private Vector2 blockPosition = new Vector2(1, 1);
+        private Collider2D collider;
+
 
         [SetUp]
         public void SetUp() {
@@ -20,7 +22,7 @@ namespace Thunderbolt {
             level.phys = pm;
 
             var block = go();
-            Collider2D collider = block.AddComponent<BoxCollider2D>();
+            collider = block.AddComponent<BoxCollider2D>();
             collider.transform.position = blockPosition;
 
             level.phys.OverlapCircle(Arg.Any<Vector2>(), Arg.Any<float>(), Arg.Any<int>())
@@ -29,7 +31,7 @@ namespace Thunderbolt {
         }
 
         [Test]
-        public void TestFindsRightBlock() {
+        public void TestStepFindsRightBlock() {
             Vector2 expectedPos = new Vector2(2.0f, 1.0f);
 
             var block = go();
@@ -48,7 +50,7 @@ namespace Thunderbolt {
         }
 
         [Test]
-        public void TestFindsLeftBlock() {
+        public void TestStepFindsLeftBlock() {
             Vector2 expectedPos = new Vector2(0f, 1.0f);
 
             var block = go();
@@ -67,8 +69,15 @@ namespace Thunderbolt {
         }
 
         [Test]
-        public void TestFindsTopBlockHoist() {
-            Assert.True(false);
+        public void TestHoistFindsTopBlock() {
+            level.phys.Raycast(Arg.Any<Vector2>(), Arg.Any<Vector2>(), Arg.Any<float>(), Arg.Any<int>())
+                .ReturnsForAnyArgs(collider);
+
+            var player = getPlayer();
+            Vector2 targetPos = level.GetTargetPositionHoist(player.transform);
+
+            Assert.AreEqual(blockPosition, targetPos);
+            level.phys.Received().Raycast(player.transform.position, Vector2.up, Arg.Any<float>(), Arg.Any<int>());
         }
     }
 
