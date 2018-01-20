@@ -40,7 +40,7 @@ namespace Thunderbolt {
 
     public interface ILevel {
         Vector2 GetTargetPositionStep(Transform player, Direction dir);
-        Vector2 GetTargetPositionHoist(Transform player);
+        Vector2 GetTargetPositionHoist(Vector2 playerPosition);
     }
 
     public class Level : ILevel {
@@ -93,10 +93,10 @@ namespace Thunderbolt {
         /// Gets the position for a climbable block that is present above the
         /// player. If any. Otherwise Raises LevelException.
         /// </summary>
-        /// <param name="player">The player's transform.</param>
-        public Vector2 GetTargetPositionHoist(Transform player) {
+        /// <param name="playerPosition">The character's `transform.position` attribute.</param>
+        public Vector2 GetTargetPositionHoist(Vector2 playerPosition) {
             LayerMask layer = LayerMask.NameToLayer("ClimbableBlock");
-            Collider2D climbableBlock = phys.Raycast(player.position, Vector2.up, 4f, 1 << layer);
+            Collider2D climbableBlock = phys.Raycast(playerPosition, Vector2.up, 4f, 1 << layer);
 
             if(climbableBlock != null) {
                 return climbableBlock.transform.position;

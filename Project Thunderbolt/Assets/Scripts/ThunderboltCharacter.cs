@@ -51,14 +51,17 @@ namespace Thunderbolt {
         const float k_CeilingRadius = .01f;
         const float k_GroundedRadius = .2f; 
         public IAnimator animator;            
-        private bool facingRight = true;  
-        private bool m_Grounded;            
-        private bool running = false;
-        private bool stepping = false;
+        public bool facingRight = true;  
+        public bool m_Grounded;            
+        public bool running = false;
+        public bool stepping = false;
+        public bool hoisting = false;
+
         private Transform m_CeilingCheck;   
         private Transform m_GroundCheck;    
-        private Vector2 targetPosition;
+
         public ILerp lerp = new Lerp();
+        public ILerp hoistLerp = new Lerp();
         public ILevel level = new Level();
         public Rigidbody2D rb;
 
@@ -93,7 +96,7 @@ namespace Thunderbolt {
         /// <param name="crouch">If set to <c>true</c> crouch.</param>
         /// <param name="hoist">If set to <c>true</c> hoist.</param>
         /// <param name="run">If set to <c>true</c> run.</param>
-        public void Move(float move, bool crouch, bool hoist, bool run) {
+        public void Move(float move, bool crouch, bool initiateHoist, bool run) {
 
             bool initiateStep = move != 0;
             //Debug.LogFormat("stepping: {0}, inititateStep: {1}, move: {2}", stepping, initiateStep, move);
@@ -102,7 +105,7 @@ namespace Thunderbolt {
                 InititateStep(move, facingRight, run);
             }
 
-            if(!stepping && hoist) {
+            if(!stepping && initiateHoist) {
                 InitiateHoist();
             }
 
@@ -112,28 +115,35 @@ namespace Thunderbolt {
                 if(!stillStepping) {
                     stepping = false;
                     if(initiateStep) {
-                        Move(move, crouch, hoist, run);
+                        Move(move, crouch, initiateHoist, run);
                     } else {
                         animator.SetFloat("Speed", 0f);
                     }
                 }
             }
 
+            if(hoisting == true) {
+                hoisting = ProcessHoist();
+            }
+
         }
 
         public void InitiateHoist() {
+            Vector2 targetPosition;
             try { 
-                targetPosition = level.GetTargetPositionHoist(this.transform);
-                animator.SetTrigger("Hoist");
-                Debug.Log(targetPosition);
+                targetPosition = level.GetTargetPositionHoist(this.transform.position);
             } catch(LevelException e) {
-                return;
+                targetPosition = (Vector2) this.transform.position + new Vector2(0, 3);
             } 
+
+            animator.SetTrigger("Hoist");
+            hoistLerp.StartLerping(rb.position, targetPosition, 0.9f);
+            hoisting = true;
         }
 
         public void InititateStep(float move, bool facingRight, bool run) {
             Direction direction = move < 0 ? Direction.Left : Direction.Right;
-            targetPosition = level.GetTargetPositionStep(this.transform, direction);
+            Vector2 targetPosition = level.GetTargetPositionStep(this.transform, direction);
 
             float timeTaken = run ? RunConfig.timeTaken: WalkConfig.timeTaken;
             float animSpeed = run ? RunConfig.animSpeed : WalkConfig.animSpeed;
@@ -157,6 +167,12 @@ namespace Thunderbolt {
             rb.position = lerp.GetPosition();
 
             return stillStepping;
+        }
+
+        public bool ProcessHoist() {
+            bool stillHoisting = hoistLerp.Step();
+            rb.position = hoistLerp.GetPosition();
+            return stillHoisting;
         }
 
         private void Flip() {

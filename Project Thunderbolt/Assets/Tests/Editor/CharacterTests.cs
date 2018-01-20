@@ -11,11 +11,13 @@ namespace Thunderbolt {
 
         ThunderboltCharacter tc;
         float move = 0.1f;
+        private Vector2 blockPosition = new Vector2(1, 1);
 
         [SetUp]
         public void SetUp() {
             ILevel level = Substitute.For<ILevel>();
             ILerp lerp = Substitute.For<ILerp>();
+            ILerp hoistLerp = Substitute.For<ILerp>();
             IAnimator animator = Substitute.For<IAnimator>();
             GameObject player = getPlayer();
 
@@ -23,6 +25,7 @@ namespace Thunderbolt {
             tc.Awake();
             tc.level = level;
             tc.lerp = lerp;
+            tc.hoistLerp = hoistLerp;
             tc.animator = animator;
 
         }
@@ -95,9 +98,28 @@ namespace Thunderbolt {
 
         [Test]
         public void TestInitiateHoist() {
+            tc.level.GetTargetPositionHoist(Arg.Any<Vector2>()).Returns(blockPosition);
+
             tc.InitiateHoist();
-            tc.level.Received().GetTargetPositionHoist(tc.transform);
+
+            tc.level.Received().GetTargetPositionHoist(tc.transform.position);
             tc.animator.Received().SetTrigger("Hoist");
+            tc.hoistLerp.Received().StartLerping(tc.rb.position, blockPosition, Arg.Any<float>());
+            Assert.True(tc.hoisting);
+        }
+
+        [Test]
+        public void TestInitiateHoistNoBlockAbove() {
+            tc.level.GetTargetPositionHoist(Arg.Any<Vector2>()).Returns(x => { throw new LevelException("TestException"); });
+
+            tc.InitiateHoist();
+
+            Vector2 targetPos = tc.rb.position + new Vector2(0, 3);
+
+            tc.hoistLerp.Received().StartLerping(tc.rb.position, targetPos, Arg.Any<float>());
+            tc.level.Received().GetTargetPositionHoist(tc.rb.position);
+            tc.animator.Received().SetTrigger("Hoist");
+            Assert.True(tc.hoisting);
         }
 
 

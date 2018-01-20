@@ -74,7 +74,7 @@ namespace Thunderbolt {
                 .ReturnsForAnyArgs(collider);
 
             var player = getPlayer();
-            Vector2 targetPos = level.GetTargetPositionHoist(player.transform);
+            Vector2 targetPos = level.GetTargetPositionHoist(player.transform.position);
 
             Assert.AreEqual(blockPosition, targetPos);
             level.phys.Received().Raycast(player.transform.position, Vector2.up, Arg.Any<float>(), Arg.Any<int>());
